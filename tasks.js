@@ -23,7 +23,10 @@ module.exports = function(resources) {
       production: false
     }
   });
-  console.log(opt);
+
+  if( opt.production ) {
+    console.log('--- production compile ---');
+  }
 
   gulp.task('sass', function() {
     forEach(resources.sass, function(res) {
@@ -31,7 +34,7 @@ module.exports = function(resources) {
         .pipe(plumber())
         .pipe(!opt.production ? sourcemaps.init() : nop())
         .pipe(res.concat ? concat(res.destfile) : nop())
-        .pipe(sass({outputStyle: opt.production ? 'compressed' : 'expanded'}))
+        .pipe(sass({outputStyle: 'compressed'}))
         .pipe(!opt.production ? sourcemaps.write('./') : nop())
         .pipe(gulp.dest(res.dest));
     });
@@ -43,7 +46,7 @@ module.exports = function(resources) {
         .pipe(plumber())
         .pipe(!opt.production ? sourcemaps.init() : nop())
         .pipe(res.concat ? concat(res.destfile) : nop())
-        .pipe(opt.production ? uglify() : nop())
+        .pipe(uglify())
         .pipe(!opt.production ? sourcemaps.write('./') : nop())
         .pipe(gulp.dest(res.dest));
     });
@@ -53,7 +56,7 @@ module.exports = function(resources) {
     forEach(resources.html, function(res) {
       gulp.src(res.src)
         .pipe(plumber())
-        .pipe(opt.production ? html() : nop())
+        .pipe(html({minifyCSS: true, minifyJS: true}))
         .pipe(gulp.dest(res.dest));
     });
   });
