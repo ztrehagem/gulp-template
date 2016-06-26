@@ -71,11 +71,7 @@ module.exports = function(resources) {
     });
   });
 
-  gulp.task('default', [
-    'sass',
-    'js',
-    'html'
-  ]);
+  gulp.task('default', Object.keys(resources));
 
   gulp.task('w', ['watch']);
   gulp.task('watch', ['default'], function() {
