@@ -7,7 +7,7 @@ module.exports = function( assetsDir, destDir ) {
   resources.sass = [
     {
       src: [
-        assetsDir + 'sass/**/*.scss'
+        assetsDir + 'scss/**/*.scss'
       ],
       dest: destDir + 'css/',
       concat: false
