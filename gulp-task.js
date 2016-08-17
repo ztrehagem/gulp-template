@@ -2,7 +2,6 @@ var gulp = require('gulp');
 var $ = require('./gulp-modules.js');
 var utils = require('./utils.js');
 var forEach = utils.forEach;
-var errorHandler = utils.errorHandler;
 var resources = require('./resource.js')._resources;
 
 function GulpTask() {}
@@ -22,7 +21,7 @@ GulpTask.templates = {};
 GulpTask.templates.html = function() {
   return function(res) {
     gulp.src(res.src)
-      .pipe($.plumber(errorHandler))
+      .pipe($.errorHandler())
       .pipe($.html({minifyCSS: true, minifyJS: true}))
       .pipe(gulp.dest(res.dest));
   };
@@ -30,7 +29,7 @@ GulpTask.templates.html = function() {
 GulpTask.templates.sass = function() {
   return function(res) {
     gulp.src(res.src)
-      .pipe($.plumber(errorHandler))
+      .pipe($.errorHandler())
       .pipe(!$.options.production ? $.sourcemaps.init() : $.nop())
       .pipe(res.concat ? $.concat(res.destfile) : $.nop())
       .pipe($.sass({outputStyle: 'compressed'}))
@@ -41,7 +40,7 @@ GulpTask.templates.sass = function() {
 GulpTask.templates.js = function() {
   return function(res) {
     gulp.src(res.src)
-      .pipe($.plumber(errorHandler))
+      .pipe($.errorHandler())
       .pipe(!$.options.production ? $.sourcemaps.init() : $.nop())
       .pipe(res.concat ? $.concat(res.destfile) : $.nop())
       .pipe($.uglify())

@@ -1,15 +1,18 @@
-exports.sass = require('gulp-sass');
-exports.uglify = require('gulp-uglify');
-exports.html = require('gulp-minify-html');
-exports.sourcemaps = require('gulp-sourcemaps');
-exports.plumber = require('gulp-plumber');
-exports.browser = require('browser-sync');
-exports.concat = require('gulp-concat');
-exports.nop = require('gulp-nop'); // No OPeration
+var $ = module.exports = {};
+
+$.sass = require('gulp-sass');
+$.uglify = require('gulp-uglify');
+$.html = require('gulp-minify-html');
+$.sourcemaps = require('gulp-sourcemaps');
+$.plumber = require('gulp-plumber');
+$.browser = require('browser-sync');
+$.concat = require('gulp-concat');
+$.nop = require('gulp-nop'); // No OPeration
+var notifier = require('node-notifier');
 
 var minimist = require('minimist');
 
-exports.options = minimist(process.argv.slice(2), {
+$.options = minimist(process.argv.slice(2), {
   alias: {
     p: 'production'
   },
@@ -17,3 +20,15 @@ exports.options = minimist(process.argv.slice(2), {
     production: false
   }
 });
+
+$.errorHandler = function() {
+  return $.plumber(function(error) {
+    notifier.notify({
+      title: error.plugin,
+      message: error.message
+    });
+
+    console.log('\n====== ERROR [' + error.plugin + '] ======');
+    console.log(error);
+  });
+};
