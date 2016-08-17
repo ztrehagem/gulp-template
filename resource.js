@@ -40,13 +40,13 @@ Resource.Builder.prototype.option = function(name, obj) {
   return this;
 };
 
-Resource.defaults = {};
-Resource.defaults.sass = function() {
+Resource.templates = {};
+Resource.templates.sass = function() {
   return new Resource.Builder()
     .src('scss/**/*.scss')
     .dest('css/');
 };
-Resource.defaults.js = function() {
+Resource.templates.js = function() {
   return new Resource.Builder()
     .src('js/*.js')
     .src('js/*/**/*.js')
@@ -54,7 +54,7 @@ Resource.defaults.js = function() {
     .concat(true)
     .destfile('app.js');
 };
-Resource.defaults.html = function() {
+Resource.templates.html = function() {
   return new Resource.Builder()
     .src('html/**/*.html')
     .dest('');
