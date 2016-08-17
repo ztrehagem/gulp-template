@@ -1,12 +1,9 @@
+var config = require('./config.js');
 var utils = require('./utils.js');
 var wrapArray = utils.wrapArray;
 
 function Resource() {}
 var resources = Resource._resources = {};
-
-Resource.config = {};
-Resource.config.srcDir = 'resources/assets/';
-Resource.config.destDir = 'public/';
 
 Resource.add = function(name, resource) {
   if(resource.constructor != Resource.Builder) return;
@@ -22,12 +19,12 @@ Resource.Builder.prototype._get = function() {
 Resource.Builder.prototype.src = function(src) {
   this.resource.src = this.resource.src || [];
   Array.prototype.push.apply(this.resource.src, wrapArray(src).map(function(src) {
-    return Resource.config.srcDir + src;
+    return config.srcDir + src;
   }));
   return this;
 };
 Resource.Builder.prototype.dest = function(dest) {
-  this.resource.dest = Resource.config.destDir + dest;
+  this.resource.dest = config.destDir + dest;
   return this;
 };
 Resource.Builder.prototype.concat = function(concat) {
