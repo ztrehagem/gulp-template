@@ -8,11 +8,15 @@ function GulpTask() {}
 
 GulpTask._taskNameList = [];
 
-GulpTask.define = function(name, eachFn) {
+GulpTask.define = function(name, taskFuncs) {
+  taskFuncs = Array.prototype.slice.call(arguments, 1);
+
   GulpTask._taskNameList.push(name);
   gulp.task(name, function() {
     forEach(resources[name], function(res) {
-      eachFn(res);
+      forEach(taskFuncs, function(taskFunc) {
+        taskFunc(res);
+      });
     });
   });
 };
