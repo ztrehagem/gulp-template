@@ -1,5 +1,6 @@
 var $ = module.exports = {};
 
+$.gulp = require('gulp');
 $.sass = require('gulp-sass');
 $.uglify = require('gulp-uglify');
 $.html = require('gulp-minify-html');

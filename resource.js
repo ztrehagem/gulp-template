@@ -1,6 +1,7 @@
 var config = require('./config.js');
 var utils = require('./utils.js');
 var wrapArray = utils.wrapArray;
+var forEach = utils.forEach;
 
 function Resource() {}
 
@@ -10,8 +11,10 @@ Resource.add = function(name, resources) {
   resources = Array.prototype.slice.call(arguments, 1);
 
   resources.forEach(function(resource) {
-    if(resource.constructor != Resource.Builder) return;
-    (_resources[name] = (_resources[name] || [])).push(resource._get());
+    forEach(resource, function(res) {
+      if(res.constructor != Resource.Builder) return;
+      (_resources[name] = (_resources[name] || [])).push(res._get());
+    });
   });
 };
 
