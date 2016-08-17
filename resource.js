@@ -3,11 +3,16 @@ var utils = require('./utils.js');
 var wrapArray = utils.wrapArray;
 
 function Resource() {}
-var resources = Resource._resources = {};
 
-Resource.add = function(name, resource) {
-  if(resource.constructor != Resource.Builder) return;
-  (resources[name] = (resources[name] || [])).push(resource._get());
+var _resources = Resource._resources = {};
+
+Resource.add = function(name, resources) {
+  resources = Array.prototype.slice.call(arguments, 1);
+
+  resources.forEach(function(resource) {
+    if(resource.constructor != Resource.Builder) return;
+    (_resources[name] = (_resources[name] || [])).push(resource._get());
+  });
 };
 
 Resource.Builder = function(resource) {
