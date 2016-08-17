@@ -6,50 +6,54 @@ var errorHandler = utils.errorHandler;
 var resources = require('./resource.js')._resources;
 
 function GulpTask() {}
+
+GulpTask._taskNameList = [];
+
 GulpTask.define = function(name, eachFn) {
+  GulpTask._taskNameList.push(name);
   gulp.task(name, function() {
     forEach(resources[name], function(res) {
       eachFn(res);
     });
   });
-}
+};
 
-GulpTask.defineDefaults = function() {
-  GulpTask.define('sass', function(res) {
-    gulp.src(res.src)
-      .pipe($.plumber(errorHandler))
-      .pipe(!$.options.production ? $.sourcemaps.init() : $.nop())
-      .pipe(res.concat ? $.concat(res.destfile) : $.nop())
-      .pipe($.sass({outputStyle: 'compressed'}))
-      .pipe(!$.options.production ? $.sourcemaps.write('./') : $.nop())
-      .pipe(gulp.dest(res.dest));
-  });
+GulpTask.templates = {};
+GulpTask.templates.html = function(res) {
+  gulp.src(res.src)
+    .pipe($.plumber(errorHandler))
+    .pipe($.html({minifyCSS: true, minifyJS: true}))
+    .pipe(gulp.dest(res.dest));
+};
+GulpTask.templates.sass = function(res) {
+  gulp.src(res.src)
+    .pipe($.plumber(errorHandler))
+    .pipe(!$.options.production ? $.sourcemaps.init() : $.nop())
+    .pipe(res.concat ? $.concat(res.destfile) : $.nop())
+    .pipe($.sass({outputStyle: 'compressed'}))
+    .pipe(!$.options.production ? $.sourcemaps.write('./') : $.nop())
+    .pipe(gulp.dest(res.dest));
+};
+GulpTask.templates.js = function(res) {
+  gulp.src(res.src)
+    .pipe($.plumber(errorHandler))
+    .pipe(!$.options.production ? $.sourcemaps.init() : $.nop())
+    .pipe(res.concat ? $.concat(res.destfile) : $.nop())
+    .pipe($.uglify())
+    .pipe(!$.options.production ? $.sourcemaps.write('./') : $.nop())
+    .pipe(gulp.dest(res.dest));
+};
 
-  GulpTask.define('js', function(res) {
-    gulp.src(res.src)
-      .pipe($.plumber(errorHandler))
-      .pipe(!$.options.production ? $.sourcemaps.init() : $.nop())
-      .pipe(res.concat ? $.concat(res.destfile) : $.nop())
-      .pipe($.uglify())
-      .pipe(!$.options.production ? $.sourcemaps.write('./') : $.nop())
-      .pipe(gulp.dest(res.dest));
-  });
-
-  GulpTask.define('html', function(res) {
-    gulp.src(res.src)
-      .pipe($.plumber(errorHandler))
-      .pipe($.html({minifyCSS: true, minifyJS: true}))
-      .pipe(gulp.dest(res.dest));
-  });
-
-  gulp.task('default', Object.keys(resources));
+GulpTask.defineDefaultTasks = function() {
+  gulp.task('default', GulpTask._taskNameList);
 
   gulp.task('w', ['watch']);
   gulp.task('watch', ['default'], function() {
-    for( resname in resources ) {
-      forEach(resources[resname], function(res) {
-        gulp.watch(res.src, [resname]);
-      });
+    for( var resname in resources ) {
+      forEach(resources[resname], eachFn);
+    }
+    function eachFn(res) {
+      gulp.watch(res.src, [resname]);
     }
   });
 
