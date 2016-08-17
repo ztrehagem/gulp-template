@@ -19,29 +19,35 @@ GulpTask.define = function(name, eachFn) {
 };
 
 GulpTask.templates = {};
-GulpTask.templates.html = function(res) {
-  gulp.src(res.src)
-    .pipe($.plumber(errorHandler))
-    .pipe($.html({minifyCSS: true, minifyJS: true}))
-    .pipe(gulp.dest(res.dest));
+GulpTask.templates.html = function() {
+  return function(res) {
+    gulp.src(res.src)
+      .pipe($.plumber(errorHandler))
+      .pipe($.html({minifyCSS: true, minifyJS: true}))
+      .pipe(gulp.dest(res.dest));
+  };
 };
-GulpTask.templates.sass = function(res) {
-  gulp.src(res.src)
-    .pipe($.plumber(errorHandler))
-    .pipe(!$.options.production ? $.sourcemaps.init() : $.nop())
-    .pipe(res.concat ? $.concat(res.destfile) : $.nop())
-    .pipe($.sass({outputStyle: 'compressed'}))
-    .pipe(!$.options.production ? $.sourcemaps.write('./') : $.nop())
-    .pipe(gulp.dest(res.dest));
+GulpTask.templates.sass = function() {
+  return function(res) {
+    gulp.src(res.src)
+      .pipe($.plumber(errorHandler))
+      .pipe(!$.options.production ? $.sourcemaps.init() : $.nop())
+      .pipe(res.concat ? $.concat(res.destfile) : $.nop())
+      .pipe($.sass({outputStyle: 'compressed'}))
+      .pipe(!$.options.production ? $.sourcemaps.write('./') : $.nop())
+      .pipe(gulp.dest(res.dest));
+  };
 };
-GulpTask.templates.js = function(res) {
-  gulp.src(res.src)
-    .pipe($.plumber(errorHandler))
-    .pipe(!$.options.production ? $.sourcemaps.init() : $.nop())
-    .pipe(res.concat ? $.concat(res.destfile) : $.nop())
-    .pipe($.uglify())
-    .pipe(!$.options.production ? $.sourcemaps.write('./') : $.nop())
-    .pipe(gulp.dest(res.dest));
+GulpTask.templates.js = function() {
+  return function(res) {
+    gulp.src(res.src)
+      .pipe($.plumber(errorHandler))
+      .pipe(!$.options.production ? $.sourcemaps.init() : $.nop())
+      .pipe(res.concat ? $.concat(res.destfile) : $.nop())
+      .pipe($.uglify())
+      .pipe(!$.options.production ? $.sourcemaps.write('./') : $.nop())
+      .pipe(gulp.dest(res.dest));
+  };
 };
 
 GulpTask.defineDefaultTasks = function() {
