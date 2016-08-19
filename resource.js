@@ -44,7 +44,8 @@ Resource.Builder.prototype.destfile = function(destfile) {
   return this;
 };
 Resource.Builder.prototype.option = function(name, obj) {
-  this.resource[name] = obj;
+  if( typeof name == 'object' ) Object.assign(this.resource, name);
+  else this.resource[name] = obj;
   return this;
 };
 
